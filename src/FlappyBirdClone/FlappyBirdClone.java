@@ -1,9 +1,14 @@
 package FlappyBirdClone;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import javax.swing.Timer;
 
 public class FlappyBirdClone extends JFrame implements ActionListener
@@ -12,23 +17,38 @@ public class FlappyBirdClone extends JFrame implements ActionListener
     private Engine engine = new Engine();
     private JFrame frame = new JFrame("Flappy Bird: The Shit Edition");
 
-    private Rectangle bird;
+    int t = 0;
+    BufferedImage bird1 = null;
+    BufferedImage background = null;
+    BufferedImage ground = null;
+    ArrayList<BufferedImage> groundPieces;
+    BufferedImage topPipe = null;
+    BufferedImage bottomPipe = null;
+
 
     public FlappyBirdClone()
     {
         frame.add(engine);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 800);
         frame.setResizable(false);
         frame.setVisible(true);
+        try
+        {
+            bird1 = ImageIO.read(new File("../../assets/bird-1.png"));
+            background = ImageIO.read(new File("../../assets/background.png"));
+            ground = ImageIO.read(new File("../../assets/ground.png"));
+            topPipe = ImageIO.read(new File("../../assets/top-pipe.png")); //not implemented yet
+            bottomPipe = ImageIO.read(new File("../../assets/bottom-pipe.png")); //not implemented yet
+        }
+        catch(IOException e) {  e.printStackTrace();  }
+        groundPieces = new ArrayList<BufferedImage>();
+        for (int i = 0; i < background.getWidth(); i++)
+        {
+            groundPieces.add(ground.getSubimage(i, 0, 1, ground.getHeight()));
+        }
 
-
-
-
-
-        bird = new Rectangle(400, 400, 20, 20);
-
-        Timer timer = new Timer(20, this);
+        frame.setSize(background.getWidth(), background.getHeight());
+        Timer timer = new Timer(10, this);
         timer.start();
     }
 
@@ -36,29 +56,41 @@ public class FlappyBirdClone extends JFrame implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         engine.repaint();
+        tick();
     }
 
     public void repaint(Graphics g)
     {
-        g.setColor(new Color(153, 204, 255));
-        g.fillRect(0, 0, 800, 800);
+        g.drawImage(background, 0, 0, null);
+        for (int i = 0; i < groundPieces.size(); i++)
+        {
+            g.drawImage(groundPieces.get((i+t) % background.getWidth()), (i), (background.getHeight() - 141), null);
+        }
+        g.drawImage(bird1, (frame.getWidth() / 4) - (bird1.getWidth() / 2), (frame.getHeight() / 2) - (bird1.getHeight() / 2), null);
+    }
 
-        g.setColor(Color.green);
-        g.fillRect(0, 650, 800, 20);
-
-        g.setColor(new Color(153, 76, 0));
-        g.fillRect(0, 670, 800, 130);
-
-        g.setColor(Color.yellow);
-        g.fillRect(bird.x, bird.y, bird.width, bird.height);
+    public void tick() {
+        if (t < background.getWidth())
+        {
+            t++;
+        }
+        else
+        {
+            t = 0;
+        }
     }
     public static void main(String[] args)
     {
-
-        flappyBirdClone = new FlappyBirdClone();
-
-
+        EventQueue.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                try
+                {
+                    flappyBirdClone = new FlappyBirdClone();
+                }
+                catch(Exception e) { e.printStackTrace(); }
+            }
+        });
     }
-
-
 }
