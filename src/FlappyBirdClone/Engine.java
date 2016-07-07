@@ -12,6 +12,7 @@ public class Engine extends JPanel
     {
         super.paintComponent(g);
 
+        FlappyBirdClone.flappyBirdClone.firstPaint(g);
         FlappyBirdClone.flappyBirdClone.repaint(g);
     }
 }
