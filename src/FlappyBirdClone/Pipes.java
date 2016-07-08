@@ -1,49 +1,48 @@
 package FlappyBirdClone;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.Random;
+import java.awt.*;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 public class Pipes
 {
-    Random rand = new Random();
-
-    int topPipeHeight;
-    int bottomPipeHeight;
-    int pipeDistance = 100;
-    int maxTopHeight = -534;
-    int minTopHeight = -100;
-    BufferedImage topPipe = null;
-    BufferedImage bottomPipe = null;
+    LinkedList<Pipe> pipes;
 
     public Pipes() {
-        try {
-            topPipe = ImageIO.read(new File("../../assets/top-pipe.png"));
-            bottomPipe = ImageIO.read(new File("../../assets/bottom-pipe.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        topPipeHeight = rand.nextInt(minTopHeight - maxTopHeight) - 534;
-        bottomPipeHeight = topPipeHeight + topPipe.getHeight() + pipeDistance;
+        pipes = new LinkedList<>();
     }
 
-    public BufferedImage getPipe(String whichPipe) {
-        if (whichPipe.equalsIgnoreCase("top")) {
-            return topPipe;
-        } else if (whichPipe.equalsIgnoreCase("bottom")) {
-            return bottomPipe;
-        } else {
-            return null;
+    public synchronized void addPipe() {
+        this.pipes.add(new Pipe());
+    }
+
+    public synchronized void removeHiddenPipe() {
+        ListIterator<Pipe> iterator = pipes.listIterator();
+
+        while(iterator.hasNext()) {
+            Pipe potentiallyHiddenPipe = iterator.next();
+            if (potentiallyHiddenPipe.getXMotion() < -60) {
+                iterator.remove();
+            }
+
+        }
+        for(Pipe pipe : pipes) {
+            if (pipe.getXMotion() < -60) {
+                pipes.remove(pipe);
+            }
         }
     }
 
-    public int getHeight(String whichPipe) {
-        if (whichPipe.equalsIgnoreCase("top")) {
-            return topPipeHeight;
-        } else {
-            return bottomPipeHeight;
+    public void movePipes() {
+        for (Pipe pipe: pipes) {
+            pipe.movePipe();
+        }
+    }
+
+    public void drawPipes(Graphics g) {
+        for (Pipe pipe: pipes) {
+            g.drawImage(pipe.getPipe("top"), pipe.getXMotion(), pipe.getHeight("top"), null);
+            g.drawImage(pipe.getPipe("bottom"), pipe.getXMotion(), pipe.getHeight("bottom"), null);
         }
     }
 }

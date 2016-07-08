@@ -23,14 +23,14 @@ public class FlappyBirdClone extends JFrame implements ActionListener, MouseList
     private Engine engine = new Engine();
     private JFrame frame = new JFrame("Flappy Bird: The Shit Edition");
 
-    int t = 0;
+    int gr = 0;
+    int pipeTime = 200;
     BufferedImage background = null;
     BufferedImage ground = null;
     ArrayList<BufferedImage> groundPieces;
 
     Bird bird;
     Pipes pipes;
-
 
     public FlappyBirdClone()
     {
@@ -42,6 +42,7 @@ public class FlappyBirdClone extends JFrame implements ActionListener, MouseList
 
         bird = new Bird();
         pipes = new Pipes();
+        pipes.addPipe();
         try
         {
             background = ImageIO.read(new File("../../assets/background.png"));
@@ -65,14 +66,15 @@ public class FlappyBirdClone extends JFrame implements ActionListener, MouseList
     public void actionPerformed(ActionEvent e)
     {
         engine.repaint();
-        tick();
+        moveGround();
+        pipes.removeHiddenPipe();
+        pipes.movePipes();
+        pipeTimer();
     }
     @Override
     public void mouseClicked(MouseEvent e) {
         bird.jump();
     }
-
-
 
     public void firstPaint(Graphics g)
     {
@@ -81,23 +83,31 @@ public class FlappyBirdClone extends JFrame implements ActionListener, MouseList
 
     public void repaint(Graphics g)
     {
-        g.drawImage(pipes.getPipe("top"), background.getWidth() / 2, pipes.getHeight("top"), null);
-        g.drawImage(pipes.getPipe("bottom"), background.getWidth() / 2, pipes.getHeight("bottom"), null);
+        pipes.drawPipes(g);
         for (int i = 0; i < groundPieces.size(); i++)
         {
-            g.drawImage(groundPieces.get((i+t) % background.getWidth()), (i), (background.getHeight() - 141), null);
+            g.drawImage(groundPieces.get((i+ gr) % background.getWidth()), (i), (background.getHeight() - 141), null);
         }
         g.drawImage(bird.getBird(), (frame.getWidth() / 4) - (bird.getBird().getWidth() / 2), bird.getHeight(), null);
     }
 
-    public void tick() {
-        if (t < background.getWidth())
+    public void moveGround() {
+        if (gr < background.getWidth())
         {
-            t++;
+            gr++;
         }
         else
         {
-            t = 0;
+            gr = 0;
+        }
+    }
+
+    public void pipeTimer() {
+        if (pipeTime > 0) {
+            pipeTime--;
+        } else {
+            pipeTime = 200;
+            pipes.addPipe();
         }
     }
 
