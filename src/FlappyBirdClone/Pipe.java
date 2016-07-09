@@ -12,9 +12,9 @@ public class Pipe
 
     int topPipeHeight;
     int bottomPipeHeight;
-    int pipeDistance = 100;
+    int pipeDistance = 150;
     int maxTopHeight = -534;
-    int minTopHeight = -100;
+    int minTopHeight = -150;
     int xMotion = 500;
     BufferedImage topPipe = null;
     BufferedImage bottomPipe = null;
@@ -49,7 +49,7 @@ public class Pipe
     }
 
     public void movePipe() {
-        this.xMotion--;
+        this.xMotion-=2;
     }
 
     public int getXMotion() {

@@ -8,7 +8,9 @@ import java.io.IOException;
 public class Bird
 {
     BufferedImage bird1 = null;
-    int elevation;
+    int yMotion;
+    int hangTime;
+    boolean jumping;
 
     public Bird() {
         try {
@@ -17,7 +19,9 @@ public class Bird
             e.printStackTrace();
         }
 
-        elevation = (FlappyBirdClone.GAMEHEIGHT / 2) - (bird1.getHeight() / 2);
+        yMotion = (FlappyBirdClone.GAMEHEIGHT / 2) - (bird1.getHeight() / 2);
+        hangTime = 5;
+        jumping = false;
 
     }
 
@@ -25,11 +29,24 @@ public class Bird
         return this.bird1;
     }
 
+    public void birdMovement() {
+        if (jumping) {
+            this.yMotion -= hangTime--;
+            if (hangTime < 1) {
+                jumping = false;
+            }
+        } else {
+            this.yMotion += hangTime < -8 ? 8 : Math.abs(hangTime--);
+        }
+    }
+
     public void jump() {
-        this.elevation -= 5;
+        hangTime = 10;
+        jumping = true;
     }
 
     public int getHeight() {
-        return this.elevation;
+        return this.yMotion;
     }
+
 }

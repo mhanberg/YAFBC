@@ -56,33 +56,30 @@ public class FlappyBirdClone extends JFrame implements ActionListener, MouseList
         }
 
         frame.setSize(GAMEWIDTH, GAMEHEIGHT);
-        Timer timer = new Timer(10, this);
+        Timer timer = new Timer(20, this);
         timer.start();
 
 
     }
 
     @Override
-    public void actionPerformed(ActionEvent e)
-    {
+    public void actionPerformed(ActionEvent e) {
         engine.repaint();
-        moveGround();
+        bird.birdMovement();
+        count();
         pipes.removeHiddenPipe();
         pipes.movePipes();
-        pipeTimer();
     }
     @Override
     public void mouseClicked(MouseEvent e) {
         bird.jump();
     }
 
-    public void firstPaint(Graphics g)
-    {
+    public void firstPaint(Graphics g) {
         g.drawImage(background, 0, 0, null);
     }
 
-    public void repaint(Graphics g)
-    {
+    public void repaint(Graphics g) {
         pipes.drawPipes(g);
         for (int i = 0; i < groundPieces.size(); i++)
         {
@@ -91,18 +88,12 @@ public class FlappyBirdClone extends JFrame implements ActionListener, MouseList
         g.drawImage(bird.getBird(), (frame.getWidth() / 4) - (bird.getBird().getWidth() / 2), bird.getHeight(), null);
     }
 
-    public void moveGround() {
-        if (gr < background.getWidth())
-        {
-            gr++;
-        }
-        else
-        {
+    public void count() {
+        if (gr < background.getWidth()) {
+            gr+=2;
+        }  else {
             gr = 0;
         }
-    }
-
-    public void pipeTimer() {
         if (pipeTime > 0) {
             pipeTime--;
         } else {
