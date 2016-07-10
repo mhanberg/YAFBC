@@ -71,7 +71,7 @@ public class FlappyBirdClone extends JFrame implements ActionListener, MouseList
         pipes.movePipes();
     }
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void mouseReleased(MouseEvent e) {
         bird.jump();
     }
 
@@ -105,7 +105,7 @@ public class FlappyBirdClone extends JFrame implements ActionListener, MouseList
     public void mouseExited(MouseEvent e) {}
     public void mouseEntered(MouseEvent e) {}
     public void mousePressed(MouseEvent e) {}
-    public void mouseReleased(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {}
     public static void main(String[] args)
     {
         EventQueue.invokeLater(new Runnable()
