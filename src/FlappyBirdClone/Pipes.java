@@ -7,6 +7,7 @@ import java.util.ListIterator;
 public class Pipes
 {
     LinkedList<Pipe> pipes;
+    int indexOfCurrentPipe;
 
     public Pipes() {
         pipes = new LinkedList<>();
@@ -14,6 +15,10 @@ public class Pipes
 
     public synchronized void addPipe() {
         this.pipes.add(new Pipe());
+    }
+
+    public Pipe getFirstPipe() {
+        return this.pipes.getFirst();
     }
 
     public synchronized void removeHiddenPipe() {

@@ -10,49 +10,69 @@ public class Pipe
 {
     Random rand = new Random();
 
-    int topPipeHeight;
-    int bottomPipeHeight;
+    int topPipeY;
+    int bottomPipeY;
     int pipeDistance = 150;
     int maxTopHeight = -534;
     int minTopHeight = -150;
-    int xMotion = 500;
+    int x = 500;
     BufferedImage topPipe = null;
     BufferedImage bottomPipe = null;
+    Boundaries boundaries;
 
-    public Pipe() {
-        try {
+    public Pipe()
+    {
+        try
+        {
             topPipe = ImageIO.read(new File("../../assets/top-pipe.png"));
             bottomPipe = ImageIO.read(new File("../../assets/bottom-pipe.png"));
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             e.printStackTrace();
         }
-        topPipeHeight = rand.nextInt(minTopHeight - maxTopHeight) - 534;
-        bottomPipeHeight = topPipeHeight + topPipe.getHeight() + pipeDistance;
+        topPipeY = rand.nextInt(minTopHeight - maxTopHeight) - 534;
+        bottomPipeY = topPipeY + topPipe.getHeight() + pipeDistance;
+
+        boundaries = new Boundaries(x, x + topPipe.getWidth(), topPipeY + topPipe.getHeight(), bottomPipeY);
     }
 
-    public BufferedImage getPipe(String whichPipe) {
-        if (whichPipe.equalsIgnoreCase("top")) {
+    public BufferedImage getPipe(String whichPipe)
+    {
+        if (whichPipe.equalsIgnoreCase("top"))
+        {
             return topPipe;
-        } else if (whichPipe.equalsIgnoreCase("bottom")) {
+        } else if (whichPipe.equalsIgnoreCase("bottom"))
+        {
             return bottomPipe;
-        } else {
+        } else
+        {
             return null;
         }
     }
 
-    public int getHeight(String whichPipe) {
-        if (whichPipe.equalsIgnoreCase("top")) {
-            return topPipeHeight;
-        } else {
-            return bottomPipeHeight;
+    public int getHeight(String whichPipe)
+    {
+        if (whichPipe.equalsIgnoreCase("top"))
+        {
+            return topPipeY;
+        } else
+        {
+            return bottomPipeY;
         }
     }
 
-    public void movePipe() {
-        this.xMotion-=2;
+    public void movePipe()
+    {
+        this.x -= FlappyBirdClone.SPEED;
+        this.boundaries.updateXes(2);
     }
 
-    public int getXMotion() {
-        return this.xMotion;
+    public int getXMotion()
+    {
+        return this.x;
+    }
+
+    public Boundaries getBoundaries() {
+        return this.boundaries;
     }
 }

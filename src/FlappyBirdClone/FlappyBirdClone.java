@@ -18,13 +18,15 @@ public class FlappyBirdClone extends JFrame implements ActionListener, MouseList
 
     public static int GAMEHEIGHT = 708;
     public static int GAMEWIDTH = 400;
+    public static int SPEED = 2;
 
     public static FlappyBirdClone flappyBirdClone;
     private Engine engine = new Engine();
     private JFrame frame = new JFrame("Flappy Bird: The Shit Edition");
 
     int gr = 0;
-    int pipeTime = 200;
+    int pipeTime = 100;
+    boolean paused = false;
     BufferedImage background = null;
     BufferedImage ground = null;
     ArrayList<BufferedImage> groundPieces;
@@ -64,11 +66,14 @@ public class FlappyBirdClone extends JFrame implements ActionListener, MouseList
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        engine.repaint();
-        bird.birdMovement();
-        count();
-        pipes.removeHiddenPipe();
-        pipes.movePipes();
+        if (!paused) {
+            engine.repaint();
+            collisionCheck();
+            bird.birdMovement();
+            count();
+            pipes.removeHiddenPipe();
+            pipes.movePipes();
+        }
     }
     @Override
     public void mouseReleased(MouseEvent e) {
@@ -85,19 +90,45 @@ public class FlappyBirdClone extends JFrame implements ActionListener, MouseList
         {
             g.drawImage(groundPieces.get((i+ gr) % background.getWidth()), (i), (background.getHeight() - 141), null);
         }
-        g.drawImage(bird.getBird(), (frame.getWidth() / 4) - (bird.getBird().getWidth() / 2), bird.getHeight(), null);
+        g.drawImage(bird.getBird(), bird.getX(), bird.getY(), null);
     }
 
+    public void collisionCheck() {
+        if( inTopPipeCheck() || inBottomPipeCheck() || touchCeilingCheck() || touchGroundCheck()) {
+            gameOver();
+        }
+    }
+
+    public boolean inTopPipeCheck() {
+        return bird.getBoundaries().getRightX() >= pipes.getFirstPipe().getBoundaries().getLeftX() && bird.getBoundaries().getRightX() <= pipes.getFirstPipe().getBoundaries().getRightX() && bird.getBoundaries().getUpperY() <= pipes.getFirstPipe().getBoundaries().getUpperY();
+    }
+
+    public boolean inBottomPipeCheck() {
+        return bird.getBoundaries().getRightX() >= pipes.getFirstPipe().getBoundaries().getLeftX() && bird.getBoundaries().getRightX() <= pipes.getFirstPipe().getBoundaries().getRightX() && bird.getBoundaries().getUpperY() >= pipes.getFirstPipe().getBoundaries().getLowerY();
+    }
+
+    public boolean touchCeilingCheck() {
+        return bird.getBoundaries().getUpperY() <= 0;
+    }
+
+    public boolean touchGroundCheck() {
+        return bird.getBoundaries().getLowerY() >= background.getHeight() - 141;
+    }
+
+    public void gameOver() {
+        paused = true;
+
+    }
     public void count() {
         if (gr < background.getWidth()) {
-            gr+=2;
+            gr+=SPEED;
         }  else {
             gr = 0;
         }
         if (pipeTime > 0) {
             pipeTime--;
         } else {
-            pipeTime = 200;
+            pipeTime = 100;
             pipes.addPipe();
         }
     }
@@ -120,6 +151,4 @@ public class FlappyBirdClone extends JFrame implements ActionListener, MouseList
             }
         });
     }
-
-
 }
